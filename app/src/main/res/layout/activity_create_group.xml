@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backimg"
     android:orientation="vertical" >
 
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="4.6" >
+        android:layout_weight="4.6"
+        android:dividerHeight="3dip"
+        >
     </ListView>
 
     <LinearLayout
@@ -22,37 +25,37 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:background="@android:color/darker_gray"
+            android:background="@android:color/transparent"
             >
 
             <Button
                 android:layout_height="match_parent"
                 android:layout_width="0dip"
                 android:layout_weight="1"
+                android:layout_margin="5dip"
                 android:onClick="onPrevious"
-                android:text="Previous"
                 android:textColor="@android:color/primary_text_dark"
-                android:background="@android:color/darker_gray"
+                android:background="@drawable/back"
                 android:id="@+id/prev"
                 />
             <Button
                 android:layout_height="match_parent"
                 android:layout_width="0dip"
                 android:layout_weight="1"
+                android:layout_margin="5dip"
                 android:onClick="onPlay"
-                android:text="PLAY"
                 android:textColor="@android:color/primary_text_dark"
-                android:background="@android:color/darker_gray"
+                android:background="@drawable/play_button"
                 android:id="@+id/play"
                 />
             <Button
                 android:layout_height="match_parent"
                 android:layout_width="0dip"
                 android:layout_weight="1"
+                android:layout_margin="5dip"
                 android:onClick="onNext"
-                android:text="Next"
                 android:textColor="@android:color/primary_text_dark"
-                android:background="@android:color/darker_gray"
+                android:background="@drawable/next"
                 android:id="@+id/next"
                 />
 

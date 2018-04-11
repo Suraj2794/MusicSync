@@ -12,7 +12,7 @@
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
         android:id="@+id/app_symbol"
-        android:src="@drawable/headphone"
+        android:src="@drawable/headphone_symbol_red"
         android:layout_centerVertical="true"
         />
     <TextView
@@ -40,19 +40,12 @@
             android:layout_height="match_parent"
             android:layout_weight="5"
             android:id="@+id/login"
-            android:text="LOGIN"
+            android:text="GET STARTED"
             android:textSize="15dip"
-            android:background="@drawable/button_shape"
-            />
-        <Button
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:id="@+id/signup"
-            android:text="SIGNUP"
-            android:textSize="15dip"
+
             android:background="@color/colorPrimary"
             />
+
     </LinearLayout>
 
 </RelativeLayout>

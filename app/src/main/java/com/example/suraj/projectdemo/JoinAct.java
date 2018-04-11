@@ -127,17 +127,7 @@ public class JoinAct extends AppCompatActivity {
                 manager.enableNetwork(tempConf.networkId, true);
                 manager.reconnect();
                 IntentFilter filter=new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                registerReceiver(new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String action = intent.getAction();
-                        /*if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action))
-                        {
-                            Toast.makeText(JoinAct.this,"Successfully connected to the network",1).show();
-                            CONNECTED = true;
-                        }*/
-                    }
-                },filter);
+
                 if(manager.getConnectionInfo()!=null)
                 {
                     if(manager.getConnectionInfo().getSSID().equals("\"" + WIFI_SSID + "\"") || manager.getConnectionInfo().getSSID().equals( WIFI_SSID ))
@@ -171,8 +161,5 @@ public class JoinAct extends AppCompatActivity {
 protected void onPause(){
         super.onPause();
         //mManager.removeServiceRequest(mChannel,serviceRequest,null);
-
         }
-
-
-        }
+}

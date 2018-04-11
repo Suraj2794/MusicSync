@@ -141,7 +141,6 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
                         .getColumnIndex(MediaStore.Audio.Media.ARTIST);
                 int nameColumn = musicCursor
                         .getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME);
-                int filePath=musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
                 // add songs to list
                 do {
                     String path = musicCursor.getString(idColumn);

@@ -62,6 +62,11 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
     String filePath;
     List<Socket> connectedClients=new ArrayList<Socket>();
     Handler handler=new Handler();
+    boolean isFirstTime=true;
+    private static final String PLAY="C:PLAY";
+    private static final String PAUSE="C:PAUSE";
+    private static final String SEEKER="C:SEEKER";
+    private static final String NEW="C:NEW";
     @Override
     public IBinder onBind(Intent arg0) {
         // TODO Auto-generated method stub
@@ -158,10 +163,12 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
                 if(action.equals("com.example.musicplayer.play"))
                 {
                     mp.start();
+                    control_functions(PLAY);
                 }
                 else if(action.equals("com.example.musicplayer.pause"))
                 {
                     mp.pause();
+                    control_functions(PAUSE);
                 }
                 else if(action.equals("com.example.musicplayer.next"))
                 {
@@ -213,8 +220,8 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
                         mp.prepare();
                         mp.start();
                         seek.setMax(mp.getDuration());
-                        //new SeekThread().start();
                         seek.setOnSeekBarChangeListener((SeekBar.OnSeekBarChangeListener) arg0);
+                        control_functions(NEW);
                         new sendSong().execute();
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -356,6 +363,24 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
         }
     }
 
+    public void control_functions(String control_msg)
+    {
+        Toast.makeText(getApplicationContext(),control_msg,1).show();
+        try {
+            for (int i = 0; i < connectedClients.size(); i++) {
+                Socket soc = connectedClients.get(i);
+                OutputStream os = soc.getOutputStream();
+                PrintStream ps=new PrintStream(os);
+                ps.println(control_msg);
+                ps.flush();
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+            Toast.makeText(getApplicationContext(),ex.getMessage(),1).show();
+        }
+    }
     class Broadcast_Song extends Thread
     {
 
@@ -415,7 +440,7 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //mp.pause();
+            mp.pause();
             Toast.makeText(getApplicationContext(), "paused", Toast.LENGTH_SHORT).show();
         }
 
@@ -423,7 +448,7 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             mp.start();
-            Toast.makeText(getApplicationContext(), "paused", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "play", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -438,23 +463,24 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
                 bis.read(mybytearray,0,mybytearray.length);
                 //os = sock.getOutputStream();
                 Log.i("message","Sending " + filePath + "(" + mybytearray.length + " bytes)");
-
-
                 for (int i = 0; i < connectedClients.size(); i++) {
                     Socket soc = connectedClients.get(i);
                     OutputStream os = soc.getOutputStream();
-
                     os.write(mybytearray,0,mybytearray.length);
                     os.flush();
+                    //os.close();
                     System.out.println("Done.");
-
-
                 }
+                /*bis.close();
+                fis.close();*/
+
             }catch(Exception ex)
             {
                 ex.printStackTrace();
             }
             return null;
         }
+
+
     }
 }

@@ -32,6 +32,12 @@ public class RService extends Service {
     MediaPlayer mp=new MediaPlayer();
     File file;
     Handler handler=new Handler();
+    private static final String PLAY="C:PLAY";
+    private static final String PAUSE="C:PAUSE";
+    private static final String SEEKER="C:SEEKER";
+    private static final String NEW="C:NEW";
+    boolean same_song=true;
+    boolean new_recived=false;
     public RService() {
     }
 
@@ -66,7 +72,7 @@ public class RService extends Service {
             try
             {
                 //sc.connect("192.168.43.1", 6034);
-                sleep(2000);
+                sleep(2500);
                 sc = new Socket("192.168.43.1", 6035);
 
                 //BufferedReader in=new BufferedReader(new InputStreamReader(sc.getInputStream()));
@@ -109,6 +115,19 @@ public class RService extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(!new_recived) {
+                try {
+                    InputStream is = sc.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String msg=br.readLine();
+                    if(msg.equals(NEW))
+                    {
+
+                    }
+                } catch (Exception ex) {
+
+                }
+            }
             Toast.makeText(getApplicationContext(),"file created ",1).show();
         }
 
@@ -124,11 +143,14 @@ public class RService extends Service {
                 mp.setLooping(true);
                 mp.prepare();
                 mp.start();
+                new ControlMessages().start();
             }
             catch (Exception ex)
             {
-                Log.d("msg",ex.getMessage());
-                //Toast.makeText(getApplicationContext(),ex.getMessage()+"",1).show();
+                new ControlMessages().start();
+                ex.printStackTrace();
+                Log.d("msg",ex.getMessage()+"");
+                Toast.makeText(getApplicationContext(),ex.getMessage()+"",1).show();
             }
         }
 
@@ -172,18 +194,30 @@ public class RService extends Service {
 
 //                    bos.write(mybytearray, 0 , current);
                     n++;
-                } while(bytesRead > -1 && current <= 1000000);
+                } while(bytesRead > -1 && current <= 4000000);
+                long numSKipped = is.skip(FILE_SIZE);
 
                 bos.write(mybytearray, 0 , current);
-                bos.flush();
+                //bos.flush();
                 System.out.println("File " + file.getPath()
                         + " downloaded (" + current + " bytes read)");
 
+               /* while(0 < numSKipped) {
+
+                    numSKipped = is.skip(FILE_SIZE);
+                    is.reset();
+                    Log.e("*****", "Skipped: " + numSKipped);
+                }*/
+                //sc.shutdownInput();
+//                is.close();
+//                bos.close();
+//                fos.close();
             }
             catch (Exception ex)
             {
                 Log.d("error",ex.getMessage()+":");
             }
+
             return null;
         }
     }
@@ -193,6 +227,45 @@ public class RService extends Service {
         super.onDestroy();
         mp.pause();
         mp.stop();
+    }
+
+    class ControlMessages extends Thread
+    {
+        @Override
+        public void run() {
+            super.run();
+            try {
+                InputStream is = sc.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                same_song = true;
+                while (same_song) {
+                    String control_msg = br.readLine();
+                    if (control_msg != null) {
+                        if (control_msg.equals(PLAY)) {
+                            mp.start();
+                        } else if (control_msg.equals(PAUSE)) {
+                            mp.pause();
+                        } else if (control_msg.equals(NEW)) {
+                            same_song = false;
+                            new_recived = true;
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    new RecieveFile().execute();
+                                }
+                            });
+                        } else if (control_msg.equals(SEEKER)) {
+                            String number = br.readLine();
+                            mp.seekTo(Integer.parseInt(number));
+                        }
+                    }
+                }
+            }catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
 }
 
