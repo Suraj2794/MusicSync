@@ -12,23 +12,22 @@ public class WifiReceiverForGroup extends BroadcastReceiver {
     private CreateGroup mActivity;
     private WifiP2pManager.PeerListListener peerListener;
     private WifiP2pManager.ConnectionInfoListener connectionListener;
-    public WifiReceiverForGroup(WifiP2pManager manager, WifiP2pManager.Channel channel,
-                                CreateGroup activity, WifiP2pManager.PeerListListener peerListener) {
+    public WifiReceiverForGroup(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiP2pManager.PeerListListener peerListener) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
-        this.mActivity = activity;
+        //this.mActivity = activity;
         this.peerListener=peerListener;
     }
 
-    public WifiReceiverForGroup(WifiP2pManager manager, WifiP2pManager.Channel channel,
+    /*public WifiReceiverForGroup(WifiP2pManager manager, WifiP2pManager.Channel channel,
                                 CreateGroup activity, WifiP2pManager.ConnectionInfoListener connectionListener) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
         this.mActivity = activity;
         this.connectionListener=connectionListener;
-    }
+    }*/
 
     @Override
     public void onReceive(Context context, Intent intent) {

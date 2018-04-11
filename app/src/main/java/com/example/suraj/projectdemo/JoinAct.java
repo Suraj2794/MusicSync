@@ -1,7 +1,14 @@
 package com.example.suraj.projectdemo;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -15,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,151 +32,147 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JoinAct extends AppCompatActivity implements WifiP2pManager.ConnectionInfoListener{
+public class JoinAct extends AppCompatActivity {
 
     private final IntentFilter intentFilter = new IntentFilter();
     final HashMap<String, String> group = new HashMap<String, String>();
     WifiP2pManager mManager;
     WifiP2pManager.Channel mChannel;
-    private List<String> groupOwners=new ArrayList<>();
+    private List<String> groupOwners = new ArrayList<>();
     private WifiP2pManager.PeerListListener peerListUpdate;
-    private List<WifiP2pDevice> groupDevices=new ArrayList<WifiP2pDevice>();
+    private List<WifiP2pDevice> groupDevices = new ArrayList<WifiP2pDevice>();
     ArrayAdapter<String> adapter;
     WifiP2pConfig config = new WifiP2pConfig();
     WifiP2pGroup grp;
     ListView lv;
     WifiReceiver wifi;
     WifiP2pDnsSdServiceRequest serviceRequest;
+    WifiP2pManager.ConnectionInfoListener info;
+    Button ds;
+    Intent intent1;
+    ////////////////////////////////////////////////////////////////////////////////////////
+    WifiManager manager;
+    List<ScanResult> wifiScanResultList;
+    List<ScanResult> requiredList = new ArrayList<>();
+    List<String> names = new ArrayList<>();
+    WifiConfiguration wconf = new WifiConfiguration();
+    private static boolean CONNECTED = false;
+    private static final String WIFI_SSID = "SynMusic";
+    int res;
+    IntentFilter filter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
-        lv=(ListView)findViewById(R.id.availableGroups);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mManager.initialize(this, getMainLooper(), null);
-        mManager.requestConnectionInfo(mChannel,this);
-        discoverService();
-        serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
-        mManager.addServiceRequest(mChannel, serviceRequest, new WifiP2pManager.ActionListener() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        lv = (ListView) findViewById(R.id.availableGroups);
+        manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        manager.setWifiEnabled(true);
+        manager.startScan();
+
+        filter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        registerReceiver(new BroadcastReceiver() {
             @Override
-            public void onSuccess() {
+            public void onReceive(Context context, Intent intent) {
 
+                String action = intent.getAction();
+                if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(action)
+                        && !CONNECTED) {
+                    wifiScanResultList = manager.getScanResults();
+                    for (ScanResult scanResult : wifiScanResultList) {
+                        if (scanResult.SSID.equals(WIFI_SSID )) {
+                            requiredList.add(scanResult);
+                            names.add(scanResult.SSID);
+                        }
+                    }
+
+                    adapter = new ArrayAdapter<String>(JoinAct.this, android.R.layout.simple_list_item_1, names);
+                    lv.setAdapter(adapter);
+                    lv.deferNotifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
+                    for (int i = 0; i < wifiScanResultList.size(); i++) {
+                        String hotspot = (wifiScanResultList.get(i)).toString();
+                        Log.d("msg", hotspot);
+                    }
+
+                }
             }
+        }, filter);
 
-            @Override
-            public void onFailure(int i) {
 
-            }
-        });
 
-        mManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure(int i) {
-
-            }
-        });
-
+        adapter = new ArrayAdapter<String>(JoinAct.this, android.R.layout.simple_list_item_1, names);
+        lv.setAdapter(adapter);
+        lv.deferNotifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                config.deviceAddress=groupDevices.get(i).deviceAddress;
-                config.wps.setup = WpsInfo.PBC;
-                mManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        Toast.makeText(JoinAct.this,"connection created succesfully",1).show();
+                wconf.SSID = requiredList.get(i).SSID;
+                wconf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                wconf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                wconf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+                wconf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                res = manager.addNetwork(wconf);
+                WifiConfiguration tempConf = null;
+                for (WifiConfiguration conf : manager.getConfiguredNetworks()) {
+                    if (null != conf.SSID
+                            && ("\"" + WIFI_SSID + "\"").equalsIgnoreCase(conf.SSID)) {
+                        tempConf = conf;
                     }
-
+                }
+                manager.setWifiEnabled(true);
+                manager.disconnect();
+                manager.enableNetwork(tempConf.networkId, true);
+                manager.reconnect();
+                IntentFilter filter=new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+                registerReceiver(new BroadcastReceiver() {
                     @Override
-                    public void onFailure(int i) {
-
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        /*if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action))
+                        {
+                            Toast.makeText(JoinAct.this,"Successfully connected to the network",1).show();
+                            CONNECTED = true;
+                        }*/
                     }
-                });
-
+                },filter);
+                if(manager.getConnectionInfo()!=null)
+                {
+                    if(manager.getConnectionInfo().getSSID().equals("\"" + WIFI_SSID + "\"") || manager.getConnectionInfo().getSSID().equals( WIFI_SSID ))
+                    {
+                    }
+                }
+                CONNECTED = true;
+                intent1=new Intent(JoinAct.this,RService.class);
+                startService(intent1);
             }
         });
+        ds = (Button) findViewById(R.id.ds);
+        ds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                manager.disconnect();
+                manager.removeNetwork(res);
+                manager.setWifiEnabled(false);
+                if(intent1!=null) {
+                    stopService(intent1);
+                }
+                CONNECTED=false;
+                //unregisterReceiver();
+            }
+        });
+
     }
 
-
-
-    @Override
-    public void onConnectionInfoAvailable(WifiP2pInfo info) {
-        InetAddress groupOwnerAddress = info.groupOwnerAddress;
-        if(info.groupFormed && info.isGroupOwner) {
+@Override
+protected void onPause(){
+        super.onPause();
+        //mManager.removeServiceRequest(mChannel,serviceRequest,null);
 
         }
 
-    }
 
-
-
-
-
-
-
-
-
-    private void discoverService() {
-        WifiP2pManager.DnsSdTxtRecordListener txtListener = new WifiP2pManager.DnsSdTxtRecordListener() {
-            @Override
-        /* Callback includes:
-         * fullDomain: full domain name: e.g "printer._ipp._tcp.local."
-         * record: TXT record dta as a map of key/value pairs.
-         * device: The device running the advertised service.
-         */
-
-            public void onDnsSdTxtRecordAvailable(
-                    String fullDomain, Map record, WifiP2pDevice device) {
-                Log.i("DnsSdTxtRecord " , record.toString());
-                record.put(device.deviceAddress, record.get("name"));
-            }
-        };
-
-        WifiP2pManager.DnsSdServiceResponseListener servListener = new WifiP2pManager.DnsSdServiceResponseListener() {
-            @Override
-            public void onDnsSdServiceAvailable(String instanceName, String registrationType,
-                                                WifiP2pDevice resourceType) {
-
-                // Update the device name with the human-friendly version from
-                // the DnsTxtRecord, assuming one arrived.
-                resourceType.deviceName = group
-                        .containsKey(resourceType.deviceAddress) ? group
-                        .get(resourceType.deviceAddress) : resourceType.deviceName;
-
-                // Add to the custom adapter defined specifically for showing
-                // wifi devices.
-                /*WiFiDirectServicesList fragment = (WiFiDirectServicesList) getFragmentManager()
-                        .findFragmentById(R.id.frag_peerlist);
-                WiFiDevicesAdapter adapter = ((WiFiDevicesAdapter) fragment
-                        .getListAdapter());*/
-                groupDevices.add(resourceType);
-                groupOwners.add(resourceType.deviceName);
-                adapter = new ArrayAdapter<String>(JoinAct.this, android.R.layout.simple_list_item_1, groupOwners);
-                lv.setAdapter(adapter);
-                lv.deferNotifyDataSetChanged();
-                adapter.notifyDataSetChanged();
-                Log.i("onBonjourService " , instanceName);
-            }
-        };
-        mManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mManager.removeServiceRequest(mChannel,serviceRequest,null);
-
-    }
-
-
-}
+        }

@@ -11,9 +11,14 @@
     <uses-permission
         android:name="android.permission.CHANGE_WIFI_STATE"
         android:required="true" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission
         android:name="android.permission.INTERNET"
         android:required="true" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +39,28 @@
         <activity android:name=".HomeAct" />
         <activity android:name=".JoinAct" />
         <activity android:name=".CreateGroup" />
-        <activity android:name=".SignUpAct"></activity>
+        <activity android:name=".SignUpAct" />
+
+        <service
+            android:name=".GroupService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="com.example.suraj.MusicFolder.SongService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".RecieveService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".HotSpotService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".RService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

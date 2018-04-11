@@ -1,32 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.suraj.projectdemo.CreateGroup">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:layout_gravity="center_horizontal"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:orientation="vertical" >
 
     <ListView
+        android:id="@+id/lv"
         android:layout_width="match_parent"
-        android:id="@+id/connectedPeers"
         android:layout_height="0dip"
-        android:layout_weight="10"
-        android:layout_margin="10dip"
-        android:dividerHeight="1dip"
-        android:divider="@android:color/holo_red_dark"
-        ></ListView>
+        android:layout_weight="4.6" >
+    </ListView>
 
+    <LinearLayout
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@android:color/darker_gray"
+            >
 
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:onClick="onPrevious"
+                android:text="Previous"
+                android:textColor="@android:color/primary_text_dark"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/prev"
+                />
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:onClick="onPlay"
+                android:text="PLAY"
+                android:textColor="@android:color/primary_text_dark"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/play"
+                />
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:onClick="onNext"
+                android:text="Next"
+                android:textColor="@android:color/primary_text_dark"
+                android:background="@android:color/darker_gray"
+                android:id="@+id/next"
+                />
+
+        </LinearLayout>
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/seek"
+            />
+
+    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.6"
+        android:text="DestroyGroup"
+        android:id="@+id/dg"
+        tools:ignore="InvalidId" />
 </LinearLayout>
+

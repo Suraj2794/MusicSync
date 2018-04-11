@@ -28,5 +28,11 @@
         android:dividerHeight="1dip"
         android:divider="@android:color/holo_red_dark"
         ></ListView>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DestroyService"
+        android:id="@+id/ds"
+        />
 
 </LinearLayout>

@@ -9,20 +9,13 @@ public class WifiReceiver extends BroadcastReceiver {
 
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
-    private CreateGroup mActivity;
+    private JoinAct mActivity;
     private WifiP2pManager.PeerListListener peerListener;
     private WifiP2pManager.ConnectionInfoListener connectionListener;
-    public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel,
-                        CreateGroup activity, WifiP2pManager.PeerListListener peerListener) {
-        super();
-        this.mManager = manager;
-        this.mChannel = channel;
-        this.mActivity = activity;
-        this.peerListener=peerListener;
-    }
+
 
     public WifiReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel,
-                        CreateGroup activity, WifiP2pManager.ConnectionInfoListener connectionListener) {
+                        JoinAct activity, WifiP2pManager.ConnectionInfoListener connectionListener) {
         super();
         this.mManager = manager;
         this.mChannel = channel;
@@ -45,6 +38,10 @@ public class WifiReceiver extends BroadcastReceiver {
 
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             // Respond to new connection or disconnections
+            if(mManager!=null)
+            {
+                mManager.requestConnectionInfo(mChannel,connectionListener);
+            }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
         }
