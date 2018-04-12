@@ -55,12 +55,13 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
     Parcelable[] parc;
     Intent intent;
     ArrayList<MusicData> list;
-    ServerSocket serverSocket;
+    ServerSocket serverSocket,control_server;
     WifiManager wifiManager;
     /*AudioManager audio =  (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     AudioStream audioStream;*/
     String filePath;
     List<Socket> connectedClients=new ArrayList<Socket>();
+    List<Socket> control_clients=new ArrayList<Socket>();
     Handler handler=new Handler();
     boolean isFirstTime=true;
     private static final String PLAY="C:PLAY";
@@ -115,6 +116,7 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
                     netConfig=(WifiConfiguration)getWifiApConfigurationMethod.invoke(wifiManager);
                     Log.e("CLIENT", "\nSSID:"+netConfig.SSID+"\nPassword:"+netConfig.preSharedKey+"\n");
                     new Broadcast_Song().start();
+                    new Control_Server().start();
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(),e.getMessage(),1).show();
@@ -129,29 +131,7 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
         }
 
 
-        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
-        StrictMode.setThreadPolicy(policy);
-        AudioManager audio = (AudioManager)getSystemService(AUDIO_SERVICE);
-        audio.setMode(AudioManager.STREAM_MUSIC);
-        AudioGroup audioGroup = new AudioGroup();
-        audioGroup.setMode(AudioGroup.MODE_NORMAL);
-        InetAddress inetAddress;
-        try {
-            inetAddress = InetAddress.getByName("192.168.43.1");
-            AudioStream audioStream = new AudioStream(inetAddress);
-            audioStream.setCodec(AudioCodec.PCMU);
-            audioStream.setMode(RtpStream.MODE_SEND_ONLY);
-            InetAddress inetAddressRemote = InetAddress.getByName("192.168.43.1");
-            audioStream.associate(inetAddressRemote, 6000);
-            //((TextView)findViewById(R.id.tv_port)).setText("Port : " + String.valueOf(audioStream.getLocalPort()));
-            audioStream.join(audioGroup);
-        }
-        catch ( UnknownHostException e ) {
-            e.printStackTrace();
-        }
-        catch ( SocketException e ) {
-            e.printStackTrace();
-        }*/
+
         super.onCreate();
         seek= CreateGroup.seek;
         reciever=new BroadcastReceiver() {
@@ -367,8 +347,8 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
     {
         Toast.makeText(getApplicationContext(),control_msg,1).show();
         try {
-            for (int i = 0; i < connectedClients.size(); i++) {
-                Socket soc = connectedClients.get(i);
+            for (int i = 0; i < control_clients.size(); i++) {
+                Socket soc = control_clients.get(i);
                 OutputStream os = soc.getOutputStream();
                 PrintStream ps=new PrintStream(os);
                 ps.println(control_msg);
@@ -482,5 +462,36 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
         }
 
 
+    }
+
+    class Control_Server extends Thread
+    {
+        public Control_Server()
+        {
+            try {
+                control_server = new ServerSocket(6099);
+                Toast.makeText(getApplicationContext(),"Socketbinded and listening",1).show();
+            }catch (Exception ex)
+            {
+
+                Toast.makeText(getApplicationContext(),ex.getMessage()+"",1).show();
+            }
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            while(true)
+            {
+                try {
+                    //sleep(2500);
+                    Socket soc=control_server.accept();
+                    control_clients.add(soc);
+                }catch (Exception ex)
+                {
+
+                }
+            }
+        }
     }
 }

@@ -54,6 +54,7 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
     public static Button play_pause;
     public static SeekBar seek;
     Intent intentService;
+    String text_p="PLAY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +73,9 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
         seek=(SeekBar)findViewById(R.id.seek);
         seek.setOnSeekBarChangeListener(this);
         song_list = new ArrayList<MusicData>();
-        previous = (Button) findViewById(R.id.prev);
-        play_pause = (Button) findViewById(R.id.play);
-        next = (Button) findViewById(R.id.next);
+        //previous = (Button) findViewById(R.id.prev);
+        //play_pause = (Button) findViewById(R.id.play);
+        //next = (Button) findViewById(R.id.next);
 		/*
 		 * if(!mp.isPlaying()) { for (int i = 0; i < controls.size(); i++) {
 		 * controls.get(i).setEnabled(false); } }
@@ -167,7 +168,7 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
 		 * ps=new PlaySong(this,song_list,arg2,controls,seek,mp);
 		 * ps.play_Song();
 		 */
-        play_pause.setText("PAUSE");
+        text_p="PAUSE";
         position=arg2;
         Intent intent = new Intent("com.example.musicplayer.frmList");
         intent.putExtra("name", song_list.get(arg2).getPath());
@@ -193,14 +194,14 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
 
     public void onPlay(View view) {
 
-        if (play_pause.getText().equals("PLAY")) {
+        if (text_p.equals("PLAY")) {
             Intent intent = new Intent("com.example.musicplayer.play");
             sendBroadcast(intent);
-            play_pause.setText("PAUSE");
+            text_p="PAUSE";
         } else {
             Intent intent = new Intent("com.example.musicplayer.pause");
             sendBroadcast(intent);
-            play_pause.setText("PLAY");
+            text_p="PLAY";
         }
     }
 

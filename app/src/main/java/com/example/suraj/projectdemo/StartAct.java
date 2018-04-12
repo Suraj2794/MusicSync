@@ -28,10 +28,8 @@ public class StartAct extends AppCompatActivity {
         getSupportActionBar().hide();
         Typeface tf=Typeface.createFromAsset(getApplicationContext().getAssets(), "georgia.ttf");
         login=(Button)findViewById(R.id.login);
-        signup=(Button)findViewById(R.id.signup);
         intro=(TextView)findViewById(R.id.intro);
         login.setTypeface(tf);
-        signup.setTypeface(tf);
         intro.setTypeface(tf);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,13 +38,7 @@ public class StartAct extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SignUpAct.class);
-                startActivity(intent);
-            }
-        });
+
 //        permissionGranted = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 //        hotspotPermission=ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
 //        filePermission= ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;

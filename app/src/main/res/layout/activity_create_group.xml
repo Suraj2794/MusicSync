@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backimg"
-    android:orientation="vertical" >
+    android:background="#444444"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip"
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="0dip"
+        android:layout_marginBottom="15dip"
         android:layout_weight="4.6"
         android:dividerHeight="3dip"
         >
@@ -19,44 +22,56 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:layout_width="match_parent"
+        android:layout_margin="10dip"
         android:orientation="vertical">
         <LinearLayout
             android:layout_height="0dip"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:background="@android:color/transparent"
+            android:background="#eeeeee"
+            android:gravity="center"
             >
 
-            <Button
+
+            <android.support.design.widget.FloatingActionButton
                 android:layout_height="match_parent"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:layout_margin="5dip"
                 android:onClick="onPrevious"
                 android:textColor="@android:color/primary_text_dark"
-                android:background="@drawable/back"
+                android:src="@drawable/back"
                 android:id="@+id/prev"
+                android:clickable="true"
+                android:layout_gravity="bottom|center"
                 />
-            <Button
+
+            <android.support.design.widget.FloatingActionButton
                 android:layout_height="match_parent"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:layout_margin="5dip"
                 android:onClick="onPlay"
                 android:textColor="@android:color/primary_text_dark"
-                android:background="@drawable/play_button"
+                android:src="@drawable/play_button"
                 android:id="@+id/play"
+                android:clickable="true"
+                android:layout_gravity="bottom|center"
                 />
-            <Button
+
+
+            <android.support.design.widget.FloatingActionButton
                 android:layout_height="match_parent"
                 android:layout_width="0dip"
                 android:layout_weight="1"
                 android:layout_margin="5dip"
                 android:onClick="onNext"
                 android:textColor="@android:color/primary_text_dark"
-                android:background="@drawable/next"
+                android:src="@drawable/next"
                 android:id="@+id/next"
+                android:clickable="true"
+                android:layout_gravity="bottom|center"
                 />
 
         </LinearLayout>
@@ -73,6 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="0.6"
+        android:layout_marginTop="10dip"
         android:text="DestroyGroup"
         android:id="@+id/dg"
         tools:ignore="InvalidId" />

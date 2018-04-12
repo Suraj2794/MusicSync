@@ -10,14 +10,15 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_margin="10sp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fbCreateNew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|left"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
             android:layout_margin="16sp"
+            android:layout_gravity="top|center"
             android:clickable="true"
             android:onClick="createFbClickAction"
             android:src="@mipmap/ic_action_new_white"
@@ -25,9 +26,10 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fbJoin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="10"
+            android:layout_gravity="bottom|center"
             android:layout_margin="16sp"
             android:clickable="true"
             android:onClick="joinFbClickAction"
@@ -35,16 +37,5 @@
             />
     </LinearLayout>
 
-
-    <GridView
-        android:id="@+id/grdViewHistory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:numColumns="2"
-        android:textAlignment="center"
-        android:stretchMode="columnWidth">
-
-    </GridView>
 
 </LinearLayout>

@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 
 public class RService extends Service {
 
-    Socket sc;
+    Socket sc,control_sc;
     MediaPlayer mp=new MediaPlayer();
     File file;
     Handler handler=new Handler();
@@ -51,6 +51,7 @@ public class RService extends Service {
     public void onCreate() {
         super.onCreate();
         new Rsocket().start();
+        new Connect_controls().start();
     }
 
     class Rsocket extends Thread
@@ -117,12 +118,12 @@ public class RService extends Service {
             }
             if(!new_recived) {
                 try {
-                    InputStream is = sc.getInputStream();
+                    InputStream is = control_sc.getInputStream();
                     BufferedReader br = new BufferedReader(new InputStreamReader(is));
                     String msg=br.readLine();
                     if(msg.equals(NEW))
                     {
-
+                        new_recived=true;
                     }
                 } catch (Exception ex) {
 
@@ -235,11 +236,17 @@ public class RService extends Service {
         public void run() {
             super.run();
             try {
-                InputStream is = sc.getInputStream();
+                InputStream is = control_sc.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 same_song = true;
                 while (same_song) {
-                    String control_msg = br.readLine();
+                    final String control_msg = br.readLine();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),control_msg,1).show();
+                        }
+                    });
                     if (control_msg != null) {
                         if (control_msg.equals(PLAY)) {
                             mp.start();
@@ -264,6 +271,41 @@ public class RService extends Service {
             }catch (Exception ex)
             {
                 ex.printStackTrace();
+            }
+        }
+    }
+
+    class Connect_controls extends Thread
+    {
+        /*public Connect_controls()
+        {
+            try
+            {
+                control_sc=new Socket("192.168.43.1",6099);
+            }catch (Exception ex)
+            {
+
+            }
+        }*/
+
+        @Override
+        public void run() {
+            super.run();
+            try
+            {
+                sleep(2500);
+                control_sc=new Socket("192.168.43.1",6099);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                      Toast.makeText(getApplicationContext(),"Connected",1).show();
+                      new ControlMessages().start();
+                    }
+                });
+
+            }catch (Exception ex)
+            {
+
             }
         }
     }
