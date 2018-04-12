@@ -15,6 +15,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +56,7 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
     public static SeekBar seek;
     Intent intentService;
     String text_p="PLAY";
+    FloatingActionButton play;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,8 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
         lv = (ListView) findViewById(R.id.lv);
         seek=(SeekBar)findViewById(R.id.seek);
         seek.setOnSeekBarChangeListener(this);
+        seek.setEnabled(false);
+
         song_list = new ArrayList<MusicData>();
         //previous = (Button) findViewById(R.id.prev);
         //play_pause = (Button) findViewById(R.id.play);
@@ -187,7 +191,7 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
             position-=1;
             Intent intent = new Intent("com.example.musicplayer.previous");
             intent.putExtra("name", song_list.get(position).getPath());
-            play_pause.setText("PAUSE");
+            text_p="PAUSE";
             sendBroadcast(intent);
         }
     }
@@ -214,7 +218,7 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
             position+=1;
             Intent intent = new Intent("com.example.musicplayer.next");
             intent.putExtra("name", song_list.get(position).getPath());
-            play_pause.setText("PAUSE");
+            text_p="PAUSE";
             sendBroadcast(intent);
         }
     }
@@ -231,7 +235,7 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
     public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
         // TODO Auto-generated method stub
 
-        Toast.makeText(this, "Complete", 0).show();
+        //Toast.makeText(this, "Complete", 0).show();
     }
 
     @Override
@@ -249,14 +253,14 @@ public class CreateGroup extends AppCompatActivity implements WifiP2pManager.Gro
     @Override
     public void onSeekComplete(MediaPlayer arg0) {
         // TODO Auto-generated method stubif(position<song_list.size()-1)
-        Toast.makeText(this, "Complete", 0).show();
-        if(position<song_list.size()-1)
+        //Toast.makeText(this, "Complete", 0).show();
+       /* if(position<song_list.size()-1)
         {
             position+=1;
             Intent intent = new Intent("com.example.musicplayer.seekBarComp");
             intent.putExtra("name", song_list.get(position).getTitle());
             sendBroadcast(intent);
-        }
+        }*/
     }
 
     @Override

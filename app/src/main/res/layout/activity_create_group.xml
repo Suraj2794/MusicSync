@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#444444"
     android:paddingLeft="10dip"
     android:paddingRight="10dip"
     android:orientation="vertical">
@@ -29,8 +28,9 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:background="#eeeeee"
+            android:background="@drawable/layout_border"
             android:gravity="center"
+
             >
 
 
@@ -41,7 +41,7 @@
                 android:layout_margin="5dip"
                 android:onClick="onPrevious"
                 android:textColor="@android:color/primary_text_dark"
-                android:src="@drawable/back"
+                android:src="@drawable/ic_action_rewind"
                 android:id="@+id/prev"
                 android:clickable="true"
                 android:layout_gravity="bottom|center"
@@ -54,7 +54,7 @@
                 android:layout_margin="5dip"
                 android:onClick="onPlay"
                 android:textColor="@android:color/primary_text_dark"
-                android:src="@drawable/play_button"
+                android:src="@drawable/ic_action_play"
                 android:id="@+id/play"
                 android:clickable="true"
                 android:layout_gravity="bottom|center"
@@ -68,7 +68,7 @@
                 android:layout_margin="5dip"
                 android:onClick="onNext"
                 android:textColor="@android:color/primary_text_dark"
-                android:src="@drawable/next"
+                android:src="@drawable/ic_action_next"
                 android:id="@+id/next"
                 android:clickable="true"
                 android:layout_gravity="bottom|center"
@@ -91,6 +91,8 @@
         android:layout_marginTop="10dip"
         android:text="DestroyGroup"
         android:id="@+id/dg"
-        tools:ignore="InvalidId" />
+        tools:ignore="InvalidId"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimaryDark"/>
 </LinearLayout>
 

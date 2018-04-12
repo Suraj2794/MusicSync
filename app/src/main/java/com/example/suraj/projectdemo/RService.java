@@ -80,12 +80,12 @@ public class RService extends Service {
                 DataInputStream dis=new DataInputStream(sc.getInputStream());
                 Log.d("msg1",dis.readLine());
                 //Toast.makeText(getApplicationContext(),"dhdj",1).show();
-               handler.post(new Runnable() {
+               /*handler.post(new Runnable() {
                     @Override
                     public void run() {
                         new RecieveFile().execute();
                     }
-                });
+                });*/
             }catch (Exception ex)
             {
                 //Toast.makeText(getApplicationContext(),ex.getMessage()+"",1).show();
@@ -107,6 +107,10 @@ public class RService extends Service {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            if(mp.isPlaying())
+            {
+                mp.pause();
+            }
             file=new File(Environment.getExternalStorageDirectory(),"temp.mp3");
             if(file.exists()){
                 file.delete();
@@ -116,19 +120,7 @@ public class RService extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(!new_recived) {
-                try {
-                    InputStream is = control_sc.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                    String msg=br.readLine();
-                    if(msg.equals(NEW))
-                    {
-                        new_recived=true;
-                    }
-                } catch (Exception ex) {
 
-                }
-            }
             Toast.makeText(getApplicationContext(),"file created ",1).show();
         }
 
@@ -195,9 +187,8 @@ public class RService extends Service {
 
 //                    bos.write(mybytearray, 0 , current);
                     n++;
-                } while(bytesRead > -1 && current <= 4000000);
-                long numSKipped = is.skip(FILE_SIZE);
-
+                } while(bytesRead > -1 && current <= 3900000);
+                //long numSKipped = is.skip(FILE_SIZE);
                 bos.write(mybytearray, 0 , current);
                 //bos.flush();
                 System.out.println("File " + file.getPath()
@@ -241,12 +232,12 @@ public class RService extends Service {
                 same_song = true;
                 while (same_song) {
                     final String control_msg = br.readLine();
-                    handler.post(new Runnable() {
+                    /*handler.post(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(),control_msg,1).show();
                         }
-                    });
+                    });*/
                     if (control_msg != null) {
                         if (control_msg.equals(PLAY)) {
                             mp.start();

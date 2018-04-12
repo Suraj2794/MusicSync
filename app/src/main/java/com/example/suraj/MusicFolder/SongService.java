@@ -162,6 +162,8 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
                         mp.setLooping(true);
                         mp.prepare();
                         mp.start();seek.setMax(mp.getDuration());
+                        control_functions(NEW);
+                        new sendSong().execute();
                     }catch (Exception e) {
                         // TODO: handle exception
                     }
@@ -179,6 +181,8 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
                         mp.prepare();
                         mp.start();
                         seek.setMax(mp.getDuration());
+                        control_functions(NEW);
+                        new sendSong().execute();
                     }catch (Exception e) {
                         // TODO: handle exception
                     }
@@ -295,6 +299,7 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
         try {
 
             serverSocket.close();
+            control_server.close();
         }catch (Exception ex)
         {
 
@@ -436,8 +441,15 @@ public class SongService extends Service implements SeekBar.OnSeekBarChangeListe
             try {
 
                 File file=new File(filePath);
-
-                byte [] mybytearray  = new byte [(int)file.length()];
+                byte [] mybytearray;
+                if((int)file.length()>4000000)
+                {
+                    mybytearray  = new byte [3900000];
+                }
+                else
+                {
+                    mybytearray=new byte[(int)file.length()];
+                }
                 FileInputStream fis = new FileInputStream(file);
                 BufferedInputStream bis = new BufferedInputStream(fis);
                 bis.read(mybytearray,0,mybytearray.length);
